@@ -5,7 +5,11 @@
   "trailingComma": "es5",
   "printWidth": 80,
   "bracketSpacing": true,
-  "plugins": ["@ianvs/prettier-plugin-sort-imports"],
+  "plugins": [
+    "@ianvs/prettier-plugin-sort-imports",
+    "prettier-plugin-tailwindcss"
+  ],
+  "tailwindStylesheet": "./src/styles/globals.css",
   "importOrder": [
     "^react$",
     "^react-dom$",

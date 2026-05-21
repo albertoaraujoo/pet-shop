@@ -1,8 +1,8 @@
 pre-commit:
   commands:
-    check:
+    format:
       run: npm run format -- {staged_files}
-      glob: '*.{js,jsx,ts,tsx,css,json,md}'
+      glob: '*.{js,jsx,ts,tsx,css,json,md,prisma,mjs,yml,yaml}'
       stage_fixed: true
 
 pre-push:
