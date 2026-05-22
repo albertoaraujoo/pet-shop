@@ -1,0 +1,36 @@
+---
+description: shadcn/ui — este projeto usa Radix UI (radix-nova), não Base UI
+globs: src/components/ui/**/*,components.json
+alwaysApply: false
+---
+
+# shadcn/ui neste projeto
+
+## Configuração atual
+
+- **`components.json` → `"style": "radix-nova"`** → primitivos **Radix UI** (`radix-ui` / `@radix-ui/react-*`).
+- Não usar APIs do **Base UI** (`render` no trigger, `@base-ui/react/*`) salvo migração explícita.
+
+## Ao instalar componentes
+
+```bash
+npx shadcn@latest add <component>
+```
+
+O CLI pode perguntar **Radix UI vs Base UI** — escolher **Radix UI** para manter consistência com o que já está em `src/components/ui/`.
+
+## Padrões corretos aqui
+
+- `PopoverTrigger asChild`, `DialogTrigger asChild`, etc. (ver [Radix Popover](https://www.radix-ui.com/primitives/docs/components/popover)).
+- Docs: https://ui.shadcn.com/docs/components/radix/
+
+## Evitar
+
+- Exemplos com `PopoverTrigger render={...}` (Base UI).
+- Assumir `base-vega` / `base-nova` do shadcn “base”.
+
+## Popover + Dialog (calendário)
+
+Popover em portal dentro de Dialog modal pode bloquear cliques. Se voltar a acontecer, ver handlers em `DialogContent` ou exemplos shadcn de calendar no dialog para **Radix**.
+
+Skill global do usuário: `shadcn-ui` em `~/.cursor/skills/shadcn-ui/`.

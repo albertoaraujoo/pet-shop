@@ -13,7 +13,7 @@ const periodIcons = {
   evening: <Moon className="text-accent-yellow" />,
 };
 
-export const PeriodSection = ({ period }: PeriodSectionProps) => {
+export function PeriodSection({ period }: PeriodSectionProps) {
   return (
     <section className="mb-8 rounded-xl bg-background-tertiary">
       <div className="flex items-center justify-between border-b border-[#2E2C30] px-5 py-3">
@@ -45,4 +45,4 @@ export const PeriodSection = ({ period }: PeriodSectionProps) => {
       )}
     </section>
   );
-};
+}

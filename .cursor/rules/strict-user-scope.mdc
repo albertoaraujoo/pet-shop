@@ -1,0 +1,13 @@
+---
+description: Fazer só o que o usuário pediu; não refatorar nem corrigir extras sem autorização
+alwaysApply: true
+---
+
+# Escopo estrito
+
+- **Só o pedido da mensagem.** Ex.: “mudar sintaxe” = só `export const X = (` → `export function X(`, nada mais.
+- **Não** remover campos (`service`), extrair helpers, mudar `.map`/callbacks, corrigir TS ou “melhorar” código sem o usuário pedir.
+- **shadcn** (`src/components/ui/`): não alterar salvo pedido explícito.
+- Viu problema fora do escopo → **pergunte**, não corrija sozinho.
+
+Skills: `~/.cursor/skills/strict-user-scope/`, `~/.cursor/skills/class-transcript-install-ask/` (checar se já está instalado antes de perguntar install).

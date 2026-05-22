@@ -1,9 +1,12 @@
 import type { Metadata } from 'next';
-import { Inter, Inter_Tight } from 'next/font/google';
+import { Geist, Inter, Inter_Tight } from 'next/font/google';
 
 import '@/styles/globals.css';
 
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 const inter = Inter({
   subsets: ['latin'],
@@ -35,10 +38,14 @@ export default function RootLayout({
         'h-full',
         'antialiased',
         inter.variable,
-        interTight.variable
+        interTight.variable,
+        'font-sans',
+        geist.variable
       )}
     >
-      <body className="flex min-h-full flex-col">{children}</body>
+      <TooltipProvider>
+        <body className="flex min-h-full flex-col">{children}</body>
+      </TooltipProvider>
     </html>
   );
 }
