@@ -1,4 +1,4 @@
-import { setHours, setMinutes } from 'date-fns';
+import { startOfToday } from 'date-fns';
 import { z } from 'zod';
 
 export const appointmentFormSchema = z
@@ -11,17 +11,14 @@ export const appointmentFormSchema = z
       .date({
         error: 'A data é obrigatória',
       })
-      .min(new Date(), 'A data não pode ser no passado'),
+      .min(startOfToday(), 'A data não pode ser no passado'),
     time: z.string().min(1, 'A hora é obrigatória'),
   })
   .refine(
     (data) => {
-      const [hour, minute] = data.time.split(':');
-      const scheduledDateTime = setMinutes(
-        setHours(data.scheduleAt, Number(hour)),
-        Number(minute)
-      );
-
+      const [hour, minute] = data.time.split(':').map(Number);
+      const scheduledDateTime = new Date(data.scheduleAt);
+      scheduledDateTime.setHours(hour, minute, 0, 0);
       return scheduledDateTime > new Date();
     },
     {

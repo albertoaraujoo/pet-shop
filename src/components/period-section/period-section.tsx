@@ -41,7 +41,9 @@ export function PeriodSection({ period }: PeriodSectionProps) {
           </div>
         </div>
       ) : (
-        <p>Nenhum agendamento para este período.</p>
+        <p className="p-5 text-paragraph-small-size text-content-secondary">
+          Nenhum agendamento para este período.
+        </p>
       )}
     </section>
   );

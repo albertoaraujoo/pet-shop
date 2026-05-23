@@ -1,3 +1,9 @@
+'use client';
+
+import { Pen as EditIcon } from 'lucide-react';
+
+import { AppointmentForm } from '@/components/appointment-form';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { Appointment } from '@/types/appointment';
 
@@ -41,6 +47,14 @@ export function AppointmentCard({
         <span className="text-paragraph-small-size text-content-secondary">
           {appointment.description}
         </span>
+      </div>
+
+      <div className="col-span-2 mt-2 flex flex-1 items-center justify-end gap-2 text-right md:col-span-1 md:mt-0 md:flex">
+        <AppointmentForm appointment={appointment}>
+          <Button variant="edit" size="icon" aria-label="Editar agendamento">
+            <EditIcon size={16} />
+          </Button>
+        </AppointmentForm>
       </div>
     </div>
   );

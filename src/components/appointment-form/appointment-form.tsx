@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState, type ReactNode } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format, startOfToday } from 'date-fns';
 import {
@@ -13,7 +14,9 @@ import {
 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { IMaskInput } from 'react-imask';
+import { toast } from 'sonner';
 
+import { createAppointment } from '@/actions/create-appointment';
 import {
   appointmentFormSchema,
   type AppointmentFormValues,
@@ -51,34 +54,65 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
+import type { Appointment } from '@/types/appointment';
 import { generateTimeOptions } from '@/utils/generate-time-options';
+import { isTimeInPast } from '@/utils/is-time-in-past';
 
 const TIME_OPTIONS = generateTimeOptions();
 
-export function AppointmentForm() {
+export interface AppointmentFormProps {
+  children?: ReactNode;
+  appointment?: Appointment;
+}
+
+export function AppointmentForm({
+  children,
+  appointment,
+}: AppointmentFormProps) {
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
   const form = useForm<AppointmentFormValues>({
     defaultValues: {
       tutorName: '',
       petName: '',
       description: '',
       phone: '',
-      scheduleAt: undefined,
+      scheduleAt: startOfToday(),
       time: '',
     },
     resolver: zodResolver(appointmentFormSchema),
   });
 
+  const scheduleAt = form.watch('scheduleAt');
+
   const { isSubmitting } = form.formState;
 
-  function onSubmit(data: AppointmentFormValues) {
-    console.log('agendamento', data);
+  async function onSubmit(data: AppointmentFormValues) {
+    const [hour, minute] = data.time.split(':').map(Number);
+
+    const scheduleAt = new Date(data.scheduleAt);
+
+    scheduleAt.setHours(hour, minute, 0, 0);
+
+    const result = await createAppointment({ ...data, scheduleAt });
+
+    if (result?.error) {
+      toast.error(result.error);
+    } else {
+      setIsFormOpen(false);
+      toast.success('Agendamento criado com sucesso!');
+      form.reset();
+    }
   }
 
+  useEffect(() => {
+    form.reset(appointment);
+  }, [appointment, form]);
+
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="brand">Novo agendamento</Button>
-      </DialogTrigger>
+    <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+      {children && <DialogTrigger asChild>{children}</DialogTrigger>}
 
       <DialogContent
         variant="appointment"
@@ -202,7 +236,10 @@ export function AppointmentForm() {
                     <FormLabel className="text-label-medium-size text-content-primary">
                       Data
                     </FormLabel>
-                    <Popover>
+                    <Popover
+                      open={isCalendarOpen}
+                      onOpenChange={setIsCalendarOpen}
+                    >
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
@@ -232,8 +269,13 @@ export function AppointmentForm() {
                         <Calendar
                           mode="single"
                           selected={field.value}
-                          onSelect={field.onChange}
                           disabled={(date) => date < startOfToday()}
+                          onSelect={(date) => {
+                            field.onChange(date);
+                            if (date) {
+                              setIsCalendarOpen(false);
+                            }
+                          }}
                         />
                       </PopoverContent>
                     </Popover>
@@ -255,6 +297,7 @@ export function AppointmentForm() {
                       <Select
                         onValueChange={field.onChange}
                         value={field.value}
+                        disabled={!scheduleAt}
                       >
                         <SelectTrigger
                           className={cn(
@@ -270,7 +313,11 @@ export function AppointmentForm() {
 
                         <SelectContent>
                           {TIME_OPTIONS.map((time) => (
-                            <SelectItem key={time} value={time}>
+                            <SelectItem
+                              disabled={isTimeInPast(time, scheduleAt)}
+                              key={time}
+                              value={time}
+                            >
                               {time}
                             </SelectItem>
                           ))}

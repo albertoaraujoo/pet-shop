@@ -22,7 +22,10 @@ export function groupAppointmentsByPeriod(
 ): AppointmentPeriod[] {
   const transformedAppointments: Appointment[] = appointments.map((apt) => ({
     ...apt,
-    time: apt.scheduleAt.toLocaleTimeString('pt-BR', {}),
+    time: apt.scheduleAt.toLocaleTimeString('pt-BR', {
+      hour: '2-digit',
+      minute: '2-digit',
+    }),
     service: apt.description,
     period: getPeriod(apt.scheduleAt.getHours()),
   }));

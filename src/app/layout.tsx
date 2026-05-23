@@ -3,6 +3,8 @@ import { Geist, Inter, Inter_Tight } from 'next/font/google';
 
 import '@/styles/globals.css';
 
+import { Toaster } from 'sonner';
+
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
@@ -44,7 +46,10 @@ export default function RootLayout({
       )}
     >
       <TooltipProvider>
-        <body className="flex min-h-full flex-col">{children}</body>
+        <body className="flex min-h-full flex-col">
+          {children}
+          <Toaster position="top-right" />
+        </body>
       </TooltipProvider>
     </html>
   );
