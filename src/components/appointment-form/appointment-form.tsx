@@ -16,7 +16,7 @@ import { useForm } from 'react-hook-form';
 import { IMaskInput } from 'react-imask';
 import { toast } from 'sonner';
 
-import { createAppointment } from '@/actions/create-appointment';
+import { createAppointment, updateAppointment } from '@/actions';
 import {
   appointmentFormSchema,
   type AppointmentFormValues,
@@ -95,13 +95,19 @@ export function AppointmentForm({
 
     scheduleAt.setHours(hour, minute, 0, 0);
 
-    const result = await createAppointment({ ...data, scheduleAt });
+    const isEdit = !!appointment?.id;
+
+    const result = isEdit
+      ? await updateAppointment(appointment.id, { ...data, scheduleAt })
+      : await createAppointment({ ...data, scheduleAt });
 
     if (result?.error) {
       toast.error(result.error);
     } else {
       setIsFormOpen(false);
-      toast.success('Agendamento criado com sucesso!');
+      toast.success(
+        `Agendamento ${isEdit ? 'atualizado' : 'criado'} com sucesso!`
+      );
       form.reset();
     }
   }

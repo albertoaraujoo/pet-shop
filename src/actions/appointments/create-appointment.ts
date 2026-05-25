@@ -1,19 +1,9 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import z from 'zod';
 
 import { prisma } from '@/lib/prisma';
-
-const appointmentSchema = z.object({
-  tutorName: z.string(),
-  petName: z.string(),
-  phone: z.string(),
-  description: z.string(),
-  scheduleAt: z.date(),
-});
-
-type AppointmentData = z.infer<typeof appointmentSchema>;
+import { appointmentSchema, type AppointmentData } from './appointment-schema';
 
 export async function createAppointment(data: AppointmentData) {
   try {
@@ -46,5 +36,9 @@ export async function createAppointment(data: AppointmentData) {
       data: parsedData,
     });
     revalidatePath('/');
-  } catch (error) {}
+    return {};
+  } catch (error) {
+    console.error(error);
+    return { error: 'Erro ao criar o agendamento.' };
+  }
 }
